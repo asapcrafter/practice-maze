@@ -30,8 +30,7 @@ def printMaze(maze):
 	return
 
 def solveMaze(maze, startX, startY):
-	
- stack = Stack()
+	stack = Stack()
 
 	### Trackers and Counters
 	global goalFound 
@@ -41,49 +40,46 @@ def solveMaze(maze, startX, startY):
 
 	### Maze checker 'G', '', '|'
 	def checkValid(x, y):
-		if maze[x][y] == ' ': 
+		print("Checking", x, y)
+		if maze[x][y] == " ": 
 			return True 
 		elif maze[x][y] == 'G': 
-		
+			global goalFound
 			goalFound = True
 		else: 
-	  		return False
+			return False
         
-     
-
 	### Movement functions
 	def moveForward(x, y):
-		printMaze(maze)
+		print("Moved to:", x, y)
 		stack.push([x, y])
+  
 		global counter
 		counter += 1
 		maze[x][y] = counter
+		printMaze(maze)
+  
 		checkCounterClockwise(x, y)
 
 	def moveBackward():
-		stack.peek() 
+		lastStep = stack.peek() 
+		print("Last coord:", lastStep)
 		
 	def checkCounterClockwise(x, y):
-		print("Checking around")
 		def checkNorth():
-			checkValid(x - 1, y)
-			checkGoal(x - 1, y)
+			return checkValid(x - 1, y)
 		def checkWest():
-			checkValid(x, y - 1)
-			checkGoal(x, y - 1)
+			return checkValid(x, y - 1)
 		def checkSouth():
-			checkValid(x + 1, y)
-			checkGoal(x + 1, y)
+			return checkValid(x + 1, y)
 		def checkEast():
-			checkValid(x, y + 1)
-			checkGoal(x, y + 1)
+			return checkValid(x, y + 1)
 		if checkNorth() == True:
-			print("Valid")
-			moveForward(x + 1, y)
+			moveForward(x - 1, y)
 		elif checkWest() == True:
 			moveForward(x, y - 1)
 		elif checkSouth() == True:
-			moveForward(x - 1, y)
+			moveForward(x + 1, y)
 		elif checkEast() == True:
 			moveForward(x, y + 1)
 		else:
@@ -91,7 +87,6 @@ def solveMaze(maze, startX, startY):
    
  
 	moveForward(startX, startY)
-	printMaze(maze)
 	# while goalFound == False:
  
 solveMaze(maze, 4, 4)
