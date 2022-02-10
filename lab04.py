@@ -15,7 +15,7 @@ class Stack():
 		return len(self.items)
 
 maze = [
-	['+','+','+','+','G','+'],
+	['+','+','+','+','+','+'],
 	['+',' ','+',' ',' ','+'],
 	['+',' ',' ',' ','+','+'],
 	['+',' ','+','+',' ','+'],
@@ -35,32 +35,36 @@ def solveMaze(maze, startX, startY):
 	### Trackers and Counters
 	global goalFound 
 	goalFound = False 
+	global noSolution
+	noSolution = False
 	global counter 
 	counter = 0
 
 	### Maze checker 'G', '', '|'
-	def checkValid(x, y):
+	def checkValid(coord):
+		x, y = coord
 		print(f'Checking [{x},{y}]')
 		if maze[x][y] == " ": 
 			return True 
-		elif maze[x][y] == 'G': 
+
+	def checkGoal(coord):
+		x, y = coord
+		if maze[x][y] == 'G': 
 			global goalFound
-			print("Goal found")
 			goalFound = True
-		else: 
-			return False
+			return True
+		
         
 	### Movement functions
-	def moveForward(x, y):
+	def moveForward(coord):
+		x, y = coord
 		print(f'Moved to [{x},{y}]')
 		stack.push([x, y])
-  
 		# Marks the step taken
 		global counter
 		counter += 1
 		maze[x][y] = counter
 		printMaze(maze)
-  
 		checkCounterClockwise(x, y)
 
 	def moveBackward():
@@ -69,32 +73,40 @@ def solveMaze(maze, startX, startY):
 		print("Last coord:", lastStep)
 		x, y = lastStep
 		checkCounterClockwise(x, y)
-	
-		
+			
 	def checkCounterClockwise(x, y):
-		def checkNorth():
-			return checkValid(x - 1, y)
-		def checkWest():
-			return checkValid(x, y - 1)
-		def checkSouth():
-			return checkValid(x + 1, y)
-		def checkEast():
-			return checkValid(x, y + 1)
-		if goalFound == True:
+		north = [x - 1 , y]
+		west = [x, y - 1]
+		south = [x + 1, y]
+		east = [x, y + 1]
+		if stack.size() == 0:
+			print(stack.peek())
+			global noSolution
+			noSolution = True
+		elif checkGoal(north) == True:
 			return True
-		elif checkNorth() == True:
-			moveForward(x - 1, y)
-		elif checkWest() == True:
-			moveForward(x, y - 1)
-		elif checkSouth() == True:
-			moveForward(x + 1, y)
-		elif checkEast() == True:
-			moveForward(x, y + 1)
+		elif checkGoal(west) == True:
+			return True
+		elif checkGoal(south) == True:
+			return True
+		elif checkGoal(east) == True:
+			return True
+		elif checkValid(north) == True:
+			moveForward(north)
+		elif checkValid(west) == True:
+			moveForward(west)
+		elif checkValid(south) == True:
+			moveForward(south)
+		elif checkValid(east) == True:
+			moveForward(east)
 		else:
 			moveBackward()
    
-	while goalFound == False:
-		moveForward(startX, startY)
+	while goalFound == False and noSolution == False:
+		moveForward([startX, startY])
+	else:
+		print("Maze is finished")
+		return True
 	
  
 solveMaze(maze, 4, 4)
